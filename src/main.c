@@ -1,10 +1,13 @@
 #include <stdio.h>
-//#include "board.h"
+#include "board.h"
 //#include "generator.h"
 //#include "ui.h"
 
 int main(void) {
-    printf("Hello, Sudoku!\n");
-    // TODO: initialize board, generator, UI
+    Board* b = board_create(9);
+    board_set(b, 0, 0, 5);
+    board_print(b);
+    board_destroy(b);
+
     return 0;
 }
