@@ -1,7 +1,7 @@
 add_library(sudoku
         board.c
-        #generator.c
-        #solver.c
+        generator.c
+        solver.c
         #ui.c
 )
 
