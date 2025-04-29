@@ -17,7 +17,7 @@ static void read_line(char* buf, size_t sz) {
 static void new_game(GameState* gs) {
     char buf[64];
 
-    // wybór rozmiaru
+    // size
     do {
         printf("Select board size (4,9,16): ");
         read_line(buf,sizeof buf);
