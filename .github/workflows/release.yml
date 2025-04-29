@@ -1,3 +1,4 @@
+# .github/workflows/release.yml
 name: Release
 
 on:
@@ -8,20 +9,19 @@ on:
 
 jobs:
   build:
-    name: Build & Package
+    name: Build & Package (${{ matrix.platform }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux
-            exe: run_sudoku
-          - os: macos-latest
-            platform: macos
-            exe: run_sudoku
-          - os: windows-latest
-            platform: windows
-            exe: run_sudoku.exe
+        - os: ubuntu-latest
+          platform: linux
+          exe: run_sudoku
+        - os: macos-latest
+          platform: macos
+          exe: run_sudoku
+        - os: windows-latest
+          platform: windows
+          exe: run_sudoku.exe
 
     steps:
       - name: Checkout source
@@ -36,21 +36,21 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Package ZIP (Linux & macOS)
-        if: runner.os != 'Windows'
+      - name: Package ZIP (Unix)
+        if: matrix.os != 'windows-latest'
         run: |
           cd build/src
           zip -r sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip ${{ matrix.exe }}
 
       - name: Package ZIP (Windows)
-        if: runner.os == 'Windows'
+        if: matrix.os == 'windows-latest'
         shell: powershell
         run: |
           cd build/src
-          Compress-Archive -Path ${{ matrix.exe }} -DestinationPath sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip
+          Compress-Archive -Path ${{ matrix.exe }} -DestinationPath sudoku-${{ github.ref_name }}-windows-x64.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64
           path: build/src/sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip
@@ -61,17 +61,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Linux artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: sudoku-${{ github.ref_name }}-linux-x64
 
       - name: Download macOS artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: sudoku-${{ github.ref_name }}-macos-x64
 
       - name: Download Windows artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: sudoku-${{ github.ref_name }}-windows-x64
 
@@ -82,7 +82,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            Automated build of Sudoku-C ${github.ref_name}
+            🎉 Automated build of Sudoku-C ${{ github.ref_name }}
 
       - name: Upload Linux ZIP
         uses: softprops/action-gh-release@v1
@@ -98,5 +98,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: sudoku-${{ github.ref_name }}-windows-x64.zip
+
 
 
