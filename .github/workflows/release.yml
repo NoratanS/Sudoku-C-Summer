@@ -1,34 +1,41 @@
 name: Release
+
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
+
 jobs:
-  package:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-cmake@v3
-      - name: Build (Release)
+      - name: Build CMake
         run: |
-          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-          cmake --build build -- -j
-      - name: Create tarball
+          mkdir build && cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release
+      - name: Package binaries
         run: |
-          cd build
-          tar czf sudoku-c-${{ github.ref_name }}.tar.gz run_sudoku
+          cd build/src
+          zip -r ../../sudoku-${{ github.ref_name }}-linux-x64.zip run_sudoku
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: sudoku-${{ github.ref_name }}-linux-x64.zip
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: false
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/sudoku-c-${{ github.ref_name }}.tar.gz
-          asset_name: sudoku-c-${{ github.ref_name }}.tar.gz
-          asset_content_type: application/gzip
+          files: |
+            build/src/run_sudoku.exe
+            build/src/run_sudoku       # dla innych platform
