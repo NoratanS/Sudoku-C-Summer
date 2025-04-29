@@ -8,4 +8,4 @@ add_library(sudoku
 target_include_directories(sudoku PUBLIC include)
 
 add_executable(run_sudoku main.c)
-target_link_libraries(run_sudoku PRIVATE sudoku)
+target_link_libraries(run_sudoku PRIVATE sudoku m)
