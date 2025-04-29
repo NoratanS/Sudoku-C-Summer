@@ -2,7 +2,7 @@ add_library(sudoku
         board.c
         generator.c
         solver.c
-        #ui.c
+        ui.c
 )
 
 target_include_directories(sudoku PUBLIC include)

@@ -66,7 +66,7 @@ bool board_is_complete(const Board* board) {
     return true;
 }
 
-bool board_label_to_indicies(const Board* board, const char* label, int* row, int* col) {
+bool board_label_to_indices(const Board* board, const char* label, int* row, int* col) {
     if (!board || !label || strlen(label) < 2) return false;
     char letter = toupper(label[0]);
     int c = letter - 'A';

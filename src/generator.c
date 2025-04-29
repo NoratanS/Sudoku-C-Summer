@@ -29,7 +29,7 @@ Board* generator_full_board(int size) {
         board_destroy(b);
         return NULL;
     }
-    fprintf(stderr, "generator_full_board: filled the board");
+    //fprintf(stderr, "generator_full_board: filled the board");
     return b;
 }
 
