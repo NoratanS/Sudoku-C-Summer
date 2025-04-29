@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build binaries
+    name: Build & Package
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,20 +36,24 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Package
+      - name: Package ZIP (Linux & macOS)
+        if: runner.os != 'Windows'
         run: |
           cd build/src
-          if [ "${{ matrix.platform }}" = "windows" ]; then
-            powershell -Command "Compress-Archive -Path ${{ matrix.exe }} -DestinationPath sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip"
-          else
-            zip -r ../../sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip ${{ matrix.exe }}
-          fi
+          zip -r sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip ${{ matrix.exe }}
+
+      - name: Package ZIP (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          cd build/src
+          Compress-Archive -Path ${{ matrix.exe }} -DestinationPath sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64
-          path: build/sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip
+          path: build/src/sudoku-${{ github.ref_name }}-${{ matrix.platform }}-x64.zip
 
   release:
     name: Create GitHub Release
@@ -76,6 +80,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            Automated build of Sudoku-C ${github.ref_name}
 
       - name: Upload Linux ZIP
         uses: softprops/action-gh-release@v1
@@ -91,4 +98,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: sudoku-${{ github.ref_name }}-windows-x64.zip
+
 
