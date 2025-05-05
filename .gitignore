@@ -56,12 +56,12 @@ dkms.conf
 
 #CMAKE
 **/cmake-build-debug
+**/cmake-build-release
 **/CMakeCache.txt
 **/cmake_install.cmake
 **/install_manifest.txt
 **/CMakeFiles/
 **/CTestTestfile.cmake
-**/Makefile
 **/*.cbp
 **/CMakeScripts
 **/compile_commands.json
