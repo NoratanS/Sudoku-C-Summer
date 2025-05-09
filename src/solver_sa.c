@@ -6,7 +6,7 @@
 
 #define VERBOSE_SA 1    // 1 - prints progress info, 0 - doesn't xd
 
-// Fisher-Yates shuggle for an integer array
+// Fisher-Yates shuffle for an integer array
 static void shuffle_int(int *arr, int n) {
   for (int i = n - 1; i > 0; i--) {
     int j = rand() % (i + 1);
@@ -56,7 +56,7 @@ static int calculate_cost(const Board* board) {
   return cost;
 }
 
-// Fill all empty cells in each 3×3 block with the missing digits
+// Fill all empty cells in each block with the missing digits
 // so that each block contains all values 1..n exactly once.
 static void random_fill_blocks(Board* board) {
   int n = board->size;
@@ -72,7 +72,7 @@ static void random_fill_blocks(Board* board) {
       miss_count = 0;
       empty_count = 0;
       bool present[17] = {0}; // cant be variable sized, but also we can't have more than 16 numbers LOL!
-      // mark present values and collect empty cell indicies
+      // mark present values and collect empty cell indices
       for (int dr = 0; dr < block_size; dr++) {
         for (int dc = 0; dc < block_size; dc++) {
           int row = br * block_size + dr;

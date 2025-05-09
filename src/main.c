@@ -20,9 +20,6 @@ int main(void) {
     }
 
     generator_remove_cells(board_test, 64);
-
-
-
     board_print(board_test);
 
     bool found_sol = solver_sa(board_test, 3, 0.01, 0.999, 20000000);
@@ -36,7 +33,6 @@ int main(void) {
         printf("Cost: %d\n", calculate_cost(board_test));
         board_print(board_test);
     }
-
 
     //ui_start();
     return 0;
