@@ -8,6 +8,7 @@
 #include<math.h>
 #include <string.h>
 #include "solver_sa.c"
+#include "solver_ga.c"
 
 
 
@@ -19,10 +20,28 @@ int main(void) {
         return 1;
     }
 
-    generator_remove_cells(board_test, 64);
+    generator_remove_cells(board_test, 70);
     board_print(board_test);
 
-    bool found_sol = solver_sa(board_test, 3, 0.01, 0.999, 20000000);
+    /*bool found_sol = solver_sa(board_test, 3, 0.01, 0.999, 20000000);
+    if (found_sol) {
+        printf("\nSolution found\n");
+        printf("Cost: %d\n", calculate_cost(board_test));
+        board_print(board_test);
+    }
+    else {
+        printf("\nFailed, best found:\n");
+        printf("Cost: %d\n", calculate_cost(board_test));
+        board_print(board_test);
+    }*/
+
+    bool found_sol = solver_ga(
+        board_test,
+        640,
+        100000,
+        0.9,
+        0.1);
+
     if (found_sol) {
         printf("\nSolution found\n");
         printf("Cost: %d\n", calculate_cost(board_test));
